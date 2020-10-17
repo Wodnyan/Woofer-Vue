@@ -1,9 +1,8 @@
-import { RSA_NO_PADDING } from "constants";
 import express from "express";
 import helmet from "helmet";
 import morgan from "morgan";
 import { notFoundHandler, errorHandler } from "./middlewares/middlewares";
-import api from "./routes/api/api";
+import api from "./api/api";
 
 const app = express();
 
