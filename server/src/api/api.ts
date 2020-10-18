@@ -1,8 +1,10 @@
 import { Router } from "express";
 import users from "./users/users.routes";
+import auth from "./auth/auth.routes";
 
 const router = Router();
 router.use("/users", users);
+router.use("/auth", auth);
 
 export const messages = {
   get: "Woofer API version 1",

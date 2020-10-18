@@ -8,6 +8,7 @@ exports.up = async (knex) => {
     table.increments().notNullable();
     table.string("username", 100).notNullable();
     table.string("password", 200).notNullable();
+    table.string("email").unique().notNullable();
     table.string("image_url");
     addDefaultColumns(table);
   });
