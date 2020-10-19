@@ -1,12 +1,15 @@
 import { Router } from "express";
 import Users from "../users/users.model";
 import bcrypt from "bcrypt";
+import { simpleErrorMessage } from "../../lib/error";
 const yup = require("yup");
 
 const router = Router();
 
 export const messages = {
   signUp: "New User Created",
+  login: "Successful Login",
+  invalidLoginAttemptError: "Invalid Login Attempt",
 };
 
 const schema = yup.object().shape({
@@ -38,7 +41,7 @@ router.post("/signup", async (req, res, next) => {
       email,
       password: hashedPassword,
     });
-    res.json({
+    res.status(201).json({
       user: {
         id: user.id,
         username: user.username,
@@ -48,9 +51,7 @@ router.post("/signup", async (req, res, next) => {
     });
   } catch (error) {
     if (error.constraint === "users_email_unique") {
-      const error = new Error("Email in use.");
-      res.status(409);
-      return next(error);
+      return simpleErrorMessage(res, next, "Email in use.", 409);
     } else if (error.name === "ValidationError") {
       res.status(400);
       next(error);
@@ -59,6 +60,62 @@ router.post("/signup", async (req, res, next) => {
   }
 });
 
-router.post("/login", (req, res, next) => {});
+router.post("/login", async (req, res, next) => {
+  const { email, password } = req.body as {
+    email: string;
+    password: string;
+  };
+  try {
+    await schema.validate(
+      {
+        username: "Don't need it here",
+        email,
+        password,
+      },
+      {
+        abortEarly: false,
+      }
+    );
+    const user = await Users.query().where({ email }).first();
+    if (user) {
+      const dehash = await bcrypt.compare(password, user.password);
+      if (dehash) {
+        res.json({
+          user: {
+            id: user.id,
+            username: user.username,
+            email: user.email,
+          },
+          message: messages.login,
+        });
+      } else {
+        return simpleErrorMessage(
+          res,
+          next,
+          messages.invalidLoginAttemptError,
+          400
+        );
+      }
+    } else {
+      return simpleErrorMessage(
+        res,
+        next,
+        messages.invalidLoginAttemptError,
+        400
+      );
+    }
+  } catch (error) {
+    if (error.name === "ValidationError") {
+      return simpleErrorMessage(
+        res,
+        next,
+        messages.invalidLoginAttemptError,
+        400
+      );
+    } else {
+      next(error);
+    }
+  }
+});
 
 export default router;
