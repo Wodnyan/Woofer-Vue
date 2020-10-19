@@ -1,6 +1,7 @@
 import supertest, { Test } from "supertest";
 import { messages } from "./auth.routes";
 import app from "../../app";
+import { send } from "process";
 
 interface TestUser {
   id?: number;
@@ -23,21 +24,57 @@ const testUserBadRequest: TestUser = {
 };
 
 describe("Sign Up", () => {
-  it("should respond with a message and a token", async () => {
+  it("should respond with a message, the created user and a token", async () => {
     const resp = await supertest(app)
       .post("/api/v1/auth/signup")
       .send(testUser)
       .set("Accept", "application/json")
-      .expect(200);
+      .expect(201);
     expect(resp.body.message).toEqual(messages.signUp);
-    expect(resp.body.user).toEqual(testUser);
+    expect(resp.body.user.id).toEqual(1);
+    expect(resp.body.user.username).toEqual(testUser.username);
+    expect(resp.body.user.email).toEqual(testUser.email);
   });
-  it("should respond with error code of 400", async () => {
+  it("should respond with error code of 400 and 4 error messages", async () => {
     const resp = await supertest(app)
       .post("/api/v1/auth/signup")
       .send(testUserBadRequest)
       .set("Accept", "application/json")
       .expect(400);
     expect(resp.body.errors.length).toEqual(4);
+  });
+});
+
+describe("Login", () => {
+  it("should respond with a message and the user", async () => {
+    const resp = await supertest(app)
+      .post("/api/v1/auth/login")
+      .send(testUser)
+      .set("Accept", "application/json")
+      .expect(200);
+    expect(resp.body.message).toEqual(messages.login);
+    expect(resp.body.user.id).toEqual(1);
+    expect(resp.body.user.username).toEqual(testUser.username);
+    expect(resp.body.user.email).toEqual(testUser.email);
+  });
+  it("should respond with error code of 400", async () => {
+    const resp = await supertest(app)
+      .post("/api/v1/auth/login")
+      .send({
+        email: testUser.email,
+        password: "badPassword",
+      })
+      .set("Accept", "application/json")
+      .expect(400);
+  });
+  it("should respond with error code of 400", async () => {
+    const resp = await supertest(app)
+      .post("/api/v1/auth/login")
+      .send({
+        email: "invalid@email.com",
+        password: testUser.password,
+      })
+      .set("Accept", "application/json")
+      .expect(400);
   });
 });

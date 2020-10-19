@@ -10,7 +10,7 @@ class Users extends Model {
   id!: number;
   email!: string;
   username!: string;
-  password?: string;
+  password!: string;
 
   static get tableName() {
     return "users";
