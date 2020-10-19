@@ -1,5 +1,6 @@
 import { Router } from "express";
 import Users from "../users/users.model";
+import bcrypt from "bcrypt";
 const yup = require("yup");
 
 const router = Router();
@@ -31,13 +32,18 @@ router.post("/signup", async (req, res, next) => {
         abortEarly: false,
       }
     );
-    const user = await Users.query<any>().insert({
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await Users.query().insert({
       username,
       email,
-      password,
+      password: hashedPassword,
     });
     res.json({
-      user,
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+      },
       message: messages.signUp,
     });
   } catch (error) {
@@ -52,5 +58,7 @@ router.post("/signup", async (req, res, next) => {
     next(error);
   }
 });
+
+router.post("/login", (req, res, next) => {});
 
 export default router;
