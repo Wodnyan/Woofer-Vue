@@ -2,6 +2,7 @@ import { Router } from "express";
 import Users from "../users/users.model";
 import bcrypt from "bcrypt";
 import { simpleErrorMessage } from "../../lib/error";
+import * as jwt from "../../lib/jwt";
 const yup = require("yup");
 
 const router = Router();
@@ -80,13 +81,16 @@ router.post("/login", async (req, res, next) => {
     if (user) {
       const dehash = await bcrypt.compare(password, user.password);
       if (dehash) {
+        const payload = {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+        };
+        const token = await jwt.sign(payload);
         res.json({
-          user: {
-            id: user.id,
-            username: user.username,
-            email: user.email,
-          },
           message: messages.login,
+          user: payload,
+          token,
         });
       } else {
         return simpleErrorMessage(
