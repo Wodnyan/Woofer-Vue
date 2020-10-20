@@ -15,7 +15,7 @@ export const messages = {
 
 const schema = yup.object().shape({
   username: yup.string().trim().min(2).max(100).required(),
-  email: yup.string().email().required(),
+  email: yup.string().trim().email().required(),
   password: yup.string().trim().min(8).max(200).required(),
 });
 
