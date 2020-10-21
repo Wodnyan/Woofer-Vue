@@ -6,6 +6,7 @@ import * as yup from "yup";
 const router = Router();
 export const messages = {
   getAll: "All woofs",
+  getOne: (id: number) => `Woof with the id of ${id}`,
   post: "Created a new woof",
   delete: "Woof deleted",
 };
@@ -40,10 +41,14 @@ router.get("/", async (req, res, next) => {
 router.get("/:id", async (req, res, next) => {
   const { id } = req.params;
   try {
-    const woofs = await Woofs.query().where({ id }).first();
+    const woof = await Woofs.query().where({ id }).first();
+    if (!woof) {
+      return simpleErrorMessage(res, next, "Not Found", 404);
+    }
+    console.log(woof);
     res.json({
-      message: messages.getAll,
-      woofs,
+      message: messages.getOne(Number(id)),
+      woof,
     });
   } catch (error) {
     if (error.nativeError.code === "22P02") {
