@@ -42,20 +42,23 @@ router.post("/signup", async (req, res, next) => {
       email,
       password: hashedPassword,
     });
+    const payload = {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+    };
+    const token = await jwt.sign(payload);
     res.status(201).json({
-      user: {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-      },
+      user: payload,
       message: messages.signUp,
+      token,
     });
   } catch (error) {
     if (error.constraint === "users_email_unique") {
       return simpleErrorMessage(res, next, "Email in use.", 409);
     } else if (error.name === "ValidationError") {
       res.status(400);
-      next(error);
+      return next(error);
     }
     next(error);
   }
