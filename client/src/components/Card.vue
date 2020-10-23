@@ -1,0 +1,36 @@
+<template>
+  <article class="media">
+    <div class="media-body">
+      <h1 class="h2 mb-0 mr-2 d-inline">{{ username }}</h1>
+      <a href="#">{{ handle }}</a>
+      <p class="mb-1">
+        {{ text }}
+      </p>
+      <time :datetime="createdAt" class="text-muted ">
+        {{ createdAt }}
+      </time>
+    </div>
+  </article>
+</template>
+
+<script>
+import { defineComponent } from "vue";
+
+export default defineComponent({
+  name: "Card",
+  props: {
+    username: String,
+    handle: String,
+    text: String,
+    createdAt: String,
+  },
+});
+</script>
+
+<style scoped lang="scss">
+article {
+  margin-bottom: 1rem;
+  border: 1px solid grey;
+  padding: 1rem;
+}
+</style>
