@@ -23,6 +23,7 @@ router.get("/", async (req, res, next) => {
   const { userId } = req.query;
   try {
     const woofs = await Woofs.query()
+      .select("id", "users_id", "woof", "created_at")
       .where({ users_id: userId })
       .skipUndefined();
     res.json({
@@ -41,7 +42,10 @@ router.get("/", async (req, res, next) => {
 router.get("/:id", async (req, res, next) => {
   const { id } = req.params;
   try {
-    const woof = await Woofs.query().where({ id }).first();
+    const woof = await Woofs.query()
+      .select("id", "users_id", "woof", "created_at")
+      .where({ id })
+      .first();
     if (!woof) {
       return simpleErrorMessage(res, next, "Not Found", 404);
     }
