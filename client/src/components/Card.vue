@@ -7,7 +7,7 @@
         {{ text }}
       </p>
       <time :datetime="createdAt" class="text-muted ">
-        {{ createdAt }}
+        {{ timeStampToHumanReadable }}
       </time>
     </div>
   </article>
@@ -15,6 +15,7 @@
 
 <script>
 import { defineComponent } from "vue";
+import { format } from "timeago.js";
 
 export default defineComponent({
   name: "Card",
@@ -23,6 +24,11 @@ export default defineComponent({
     handle: String,
     text: String,
     createdAt: String,
+  },
+  computed: {
+    timeStampToHumanReadable: function() {
+      return format(this.createdAt);
+    },
   },
 });
 </script>
