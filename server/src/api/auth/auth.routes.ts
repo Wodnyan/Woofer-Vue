@@ -41,10 +41,12 @@ router.post("/signup", async (req, res, next) => {
       username,
       email,
       password: hashedPassword,
+      handle: username,
     });
     const payload = {
       id: user.id,
       username: user.username,
+      handle: user.username,
       email: user.email,
     };
     const token = await jwt.sign(payload);
@@ -88,6 +90,7 @@ router.post("/login", async (req, res, next) => {
           id: user.id,
           username: user.username,
           email: user.email,
+          handle: user.handle,
         };
         const token = await jwt.sign(payload);
         res.json({

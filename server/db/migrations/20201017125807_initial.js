@@ -16,6 +16,7 @@ const references = (table, tableName) => {
 exports.up = async (knex) => {
   await knex.schema.createTable("users", (table) => {
     table.increments().notNullable();
+    table.string("handle", 100).unique().notNullable();
     table.string("username", 100).notNullable();
     table.string("password", 200).notNullable();
     table.string("email").unique().notNullable();
