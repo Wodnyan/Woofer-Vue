@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="login">
+    <div class="container__form">
       <h1 class="text-center">Sign Up</h1>
       <form @submit.prevent="signUp" novalidate>
         <transition name="fade">
@@ -13,6 +13,7 @@
               <input
                 class="form-control"
                 id="username"
+                :class="check('username') && 'is-invalid'"
                 type="text"
                 v-model="fields.username"
               />
@@ -21,6 +22,7 @@
               <label for="email">E-Mail</label>
               <input
                 class="form-control"
+                :class="check('email') && 'is-invalid'"
                 id="email"
                 type="email"
                 v-model="fields.email"
@@ -30,6 +32,7 @@
               <label for="password">Password</label>
               <input
                 class="form-control"
+                :class="check('password') && 'is-invalid'"
                 id="password"
                 type="password"
                 v-model="fields.password"
@@ -38,11 +41,11 @@
           </div>
         </transition>
         <div class="bottom">
-          <router-link to="/auth/login">Create an Account!</router-link>
+          <router-link to="/auth/login">I already have an account.</router-link>
           <button class="btn btn-primary">Sign Up</button>
         </div>
       </form>
-      <ul v-if="errors.length">
+      <ul v-if="errors.length && typeof errors === 'object'">
         <li v-for="error in errors" :key="error">
           {{ error }}
         </li>
@@ -65,7 +68,6 @@ export default defineComponent({
         email: "",
       },
       errors: [] as [] | string[],
-      apiResp: "",
       isLoading: false,
     };
   },
@@ -87,48 +89,13 @@ export default defineComponent({
         this.isLoading = false;
       }
     },
+    check(field: "username" | "password" | "email") {
+      return this.errors.some((error: string) => error.includes(field));
+    },
   },
 });
 </script>
 
 <style lang="scss">
-.container {
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  .login {
-    width: 50%;
-    .fade-enter-active,
-    .fade-leave-active {
-      transition: opacity 1s ease;
-    }
-    .fade-enter-from,
-    .fade-leave-to {
-      opacity: 0;
-    }
-    .scale-enter-active,
-    .scale-leave-active {
-      transition: transform 0.5s ease;
-    }
-    .scale-enter-from,
-    .scale-leave-to {
-      transform: scale(0);
-    }
-    .spinner-border {
-      $spinner-size: 70px;
-      display: block;
-      margin: 0 auto;
-      width: $spinner-size;
-      height: $spinner-size;
-    }
-  }
-  .bottom {
-    display: flex;
-    a {
-      margin-right: auto;
-    }
-  }
-}
+@import "@/styles/_forms";
 </style>
