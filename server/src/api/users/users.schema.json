@@ -26,6 +26,14 @@
                 "test"
             ]
         },
+        "handle": {
+            "$id": "#/properties/handle",
+            "type": "string",
+            "title": "The handle schema",
+            "examples": [
+                "test"
+            ]
+        },
         "password": {
             "$id": "#/properties/password",
             "type": "string",
