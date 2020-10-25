@@ -33,7 +33,8 @@ router.get("/", async (req, res, next) => {
         "users.handle",
         "woofs.woof",
         "woofs.created_at"
-      );
+      )
+      .orderBy("woofs.id", "desc");
     res.json({
       message: messages.getAll,
       woofs,
