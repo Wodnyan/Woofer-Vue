@@ -5,12 +5,13 @@
         hello World
       </div>
       <div class="col-6">
-        <Card
-          v-for="woof in woofs"
+        <new-woof-form />
+        <card
+          v-for="woof in $store.state.woofs"
           :key="woof.id"
           :text="woof.woof"
-          handle="@test"
-          username="FooBar"
+          :handle="`@${woof.handle}`"
+          :username="woof.username"
           :createdAt="woof.created_at"
         />
       </div>
@@ -42,22 +43,18 @@
 
 <script>
 import Card from "@/components/Card";
+import NewWoofForm from "@/components/NewWoofForm";
 import { API_ENDPOINT } from "@/constants/endpoint";
 import axios from "axios";
 
 export default {
-  data() {
-    return {
-      woofs: [],
-    };
-  },
   components: {
     Card,
+    NewWoofForm,
   },
   async mounted() {
     const resp = await axios.get(`${API_ENDPOINT}/api/v1/woofs`);
-    this.woofs = resp.data.woofs;
-    console.log(resp.data);
+    this.$store.state.woofs = resp.data.woofs;
   },
 };
 </script>
