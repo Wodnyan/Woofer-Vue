@@ -1,6 +1,7 @@
 import { Router, Response, NextFunction } from "express";
 import { simpleErrorMessage } from "../../lib/error";
 import Woofs from "./woofs.model";
+import Users from "../users/users.model";
 import * as yup from "yup";
 
 const router = Router();
@@ -22,12 +23,19 @@ const badRequest = (res: Response, next: NextFunction) =>
 router.get("/", async (req, res, next) => {
   const { userId } = req.query;
   try {
-    const woofs = await Woofs.query()
-      .select("id", "users_id", "woof", "created_at")
+    const woofs = await Users.query()
+      .join("woofs", "users.id", "=", "woofs.users_id")
       .where({ users_id: userId })
-      .skipUndefined();
+      .skipUndefined()
+      .select(
+        "woofs.id",
+        "users.username",
+        "users.handle",
+        "woofs.woof",
+        "woofs.created_at"
+      )
+      .orderBy("woofs.id", "desc");
     res.json({
-      userId,
       message: messages.getAll,
       woofs,
     });
@@ -42,14 +50,21 @@ router.get("/", async (req, res, next) => {
 router.get("/:id", async (req, res, next) => {
   const { id } = req.params;
   try {
-    const woof = await Woofs.query()
-      .select("id", "users_id", "woof", "created_at")
-      .where({ id })
+    const woof = await Users.query()
+      .join("woofs", "users.id", "=", "woofs.users_id")
+      .where({ "woofs.id": id })
+      .skipUndefined()
+      .select(
+        "woofs.id",
+        "users.username",
+        "users.handle",
+        "woofs.woof",
+        "woofs.created_at"
+      )
       .first();
     if (!woof) {
       return simpleErrorMessage(res, next, "Not Found", 404);
     }
-    console.log(woof);
     res.json({
       message: messages.getOne(Number(id)),
       woof,

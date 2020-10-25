@@ -1,5 +1,6 @@
 import { Model } from "objection";
 import db from "../../db";
+import Woofs from "../woofs/woofs.model";
 import jsonSchema from "./users.schema.json";
 
 const connection = async () => {
@@ -19,5 +20,15 @@ class Users extends Model {
   static get jsonSchema() {
     return jsonSchema;
   }
+  static relationMappings = {
+    woofs: {
+      relation: Model.HasManyRelation,
+      modelClass: Woofs,
+      join: {
+        from: "users.id",
+        to: "woofs.users_id",
+      },
+    },
+  };
 }
 export default Users;
