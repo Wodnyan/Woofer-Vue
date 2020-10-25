@@ -9,7 +9,13 @@ export const messages = {
 
 router.get("/", async (_, res, next) => {
   try {
-    const users = await Users.query();
+    const users = await Users.query().select(
+      "id",
+      "handle",
+      "email",
+      "username",
+      "image_url"
+    );
     res.json({
       message: messages.get,
       users,
