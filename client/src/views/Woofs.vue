@@ -1,21 +1,29 @@
 <template>
   <div class="container-fluid">
+    <div
+      v-if="showNewWoofForm"
+      :data-open="showNewWoofForm"
+      class="new-woof-container"
+      @click="handleOverlayClick"
+    >
+      <new-woof-form :close="toggleNewWoofForm" />
+    </div>
     <div class="row">
       <div class="col-3">
         hello World
       </div>
       <div class="col-6">
-        <Card
-          v-for="woof in woofs"
+        <card
+          v-for="woof in $store.state.woofs"
           :key="woof.id"
           :text="woof.woof"
-          handle="@test"
-          username="FooBar"
+          :handle="`@${woof.handle}`"
+          :username="woof.username"
           :createdAt="woof.created_at"
         />
       </div>
       <div class="col-3">
-        <router-link to="/new" class="btn btn-primary btn-circle">
+        <button @click="toggleNewWoofForm" class="btn btn-primary btn-circle">
           <svg
             viewBox="0 0 24 24"
             width="24"
@@ -34,7 +42,7 @@
               d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
             ></path>
           </svg>
-        </router-link>
+        </button>
       </div>
     </div>
   </div>
@@ -42,24 +50,58 @@
 
 <script>
 import Card from "@/components/Card";
+import NewWoofForm from "@/components/NewWoofForm";
 import { API_ENDPOINT } from "@/constants/endpoint";
 import axios from "axios";
+
+const hideScrollBarIfFormIsOpen = () => {
+  const isOpen = document.querySelector(".new-woof-container")
+    ? document.querySelector(".new-woof-container").getAttribute("data-open")
+    : false;
+  if (isOpen) {
+    document.body.style.overflow = "hidden";
+  } else {
+    document.body.style.overflow = "auto";
+  }
+};
 
 export default {
   data() {
     return {
-      woofs: [],
+      showNewWoofForm: true,
     };
   },
   components: {
     Card,
+    NewWoofForm,
+  },
+  methods: {
+    toggleNewWoofForm() {
+      this.showNewWoofForm = !this.showNewWoofForm;
+    },
+    handleOverlayClick(e) {
+      if (e.target.className === "new-woof-container") this.toggleNewWoofForm();
+    },
   },
   async mounted() {
     const resp = await axios.get(`${API_ENDPOINT}/api/v1/woofs`);
-    this.woofs = resp.data.woofs;
-    console.log(resp.data);
+    this.$store.state.woofs = resp.data.woofs;
+  },
+  updated() {
+    hideScrollBarIfFormIsOpen();
   },
 };
 </script>
 
-<style lang="scss"></style>
+<style scoped lang="scss">
+.new-woof-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 100;
+}
+</style>
