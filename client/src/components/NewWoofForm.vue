@@ -1,11 +1,7 @@
 <template>
   <div class="woof-form-container">
-    <button @click="close" type="button" class="close" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
     <form @submit.prevent="addNewWoof">
       <div class="form-group">
-        <label for="woof" class="text-white">Your Woof</label>
         <textarea v-model="woof" class="form-control" />
       </div>
       <div class="d-flex align-items-center justify-content-center">
@@ -46,7 +42,7 @@ export default defineComponent({
       if (this.woof.length > this.maxLength) return;
       const payload = {
         woof: this.woof,
-        userId: this.$store.state.user.user_id,
+        userId: this.$store.state.user.id,
       };
       try {
         const res = await axios.post(`${API_ENDPOINT}/api/v1/woofs`, payload);
@@ -62,8 +58,6 @@ export default defineComponent({
 
 <style scoped lang="scss">
 .woof-form-container {
-  width: 40%;
-  margin: 5rem auto 0;
   textarea {
     font-size: 1.5rem;
     height: 200px;
