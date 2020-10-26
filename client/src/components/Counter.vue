@@ -1,5 +1,5 @@
 <template>
-  <p :class="count > max && 'text-danger'" class="mb-0 h4 text-white">
+  <p :class="count > max && 'text-danger'" class="mb-0 h4 text-primary">
     {{ count }}
   </p>
 </template>

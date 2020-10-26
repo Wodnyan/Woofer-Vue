@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-ignore */ /* eslint-disable
+@typescript-eslint/ban-ts-ignore */
 <template>
   <div class="container">
     <div class="container__form">
@@ -17,6 +19,9 @@
                 type="text"
                 v-model="fields.username"
               />
+              <div v-if="check('username')">
+                {{ getErrorForField("username") }}
+              </div>
             </div>
             <div class="form-group">
               <label for="email">E-Mail</label>
@@ -27,6 +32,9 @@
                 type="email"
                 v-model="fields.email"
               />
+              <div v-if="check('email')">
+                {{ getErrorForField("email") }}
+              </div>
             </div>
             <div class="form-group">
               <label for="password">Password</label>
@@ -37,6 +45,9 @@
                 type="password"
                 v-model="fields.password"
               />
+              <div v-if="check('password')">
+                {{ getErrorForField("password") }}
+              </div>
             </div>
           </div>
         </transition>
@@ -45,11 +56,6 @@
           <button class="btn btn-primary">Sign Up</button>
         </div>
       </form>
-      <ul v-if="errors.length && typeof errors === 'object'">
-        <li v-for="error in errors" :key="error">
-          {{ error }}
-        </li>
-      </ul>
     </div>
   </div>
 </template>
@@ -58,6 +64,8 @@
 import { defineComponent } from "vue";
 import { API_ENDPOINT } from "@/constants/endpoint";
 import axios from "axios";
+
+type Field = "username" | "password" | "email";
 
 export default defineComponent({
   data() {
@@ -85,12 +93,25 @@ export default defineComponent({
           this.$router.push("/");
         }
       } catch (error) {
-        this.errors = error.response.data.errors;
+        console.log(error.response.data.errors);
+        if (error.response.data.errors) {
+          this.errors = error.response.data.errors;
+        }
+        console.log(error.response.data);
         this.isLoading = false;
       }
     },
-    check(field: "username" | "password" | "email") {
+    check(field: Field) {
       return this.errors.some((error: string) => error.includes(field));
+    },
+    getErrorForField(field: Field): string {
+      for (let i = 0; i < this.errors.length; i++) {
+        if (this.errors[i].includes(field)) {
+          console.log(this.errors[i]);
+          return this.errors[i];
+        }
+      }
+      return "";
     },
   },
 });
