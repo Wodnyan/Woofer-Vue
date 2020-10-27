@@ -56,7 +56,7 @@ export default defineComponent({
           handle: user.handle,
         };
         this.$store.state.woofs = [newWoof, ...this.$store.state.woofs];
-        // this.woof = "";
+        this.woof = "";
         console.log(res.data);
       } catch (error) {
         console.log(error.response.data);
