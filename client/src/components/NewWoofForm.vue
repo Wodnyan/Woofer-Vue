@@ -46,7 +46,17 @@ export default defineComponent({
       };
       try {
         const res = await axios.post(`${API_ENDPOINT}/api/v1/woofs`, payload);
-
+        console.log(res.data);
+        const { user, woof, id } = res.data.woof;
+        const newWoof = {
+          id,
+          woof,
+          createdAt: res.data.woof.created_at,
+          username: user.username,
+          handle: user.handle,
+        };
+        this.$store.state.woofs = [newWoof, ...this.$store.state.woofs];
+        // this.woof = "";
         console.log(res.data);
       } catch (error) {
         console.log(error.response.data);
