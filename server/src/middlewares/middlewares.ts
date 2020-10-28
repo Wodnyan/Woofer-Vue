@@ -36,7 +36,6 @@ export async function checkAuth(
   const { token } = req.cookies;
   try {
     const isTokenValid = await verify(token);
-    console.log("TOKEN", isTokenValid);
     next();
   } catch (error) {
     simpleErrorMessage(res, next, "Forbidden", 403);
