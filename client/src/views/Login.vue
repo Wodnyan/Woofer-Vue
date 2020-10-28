@@ -66,6 +66,9 @@ export default defineComponent({
         const resp = await axios.post(
           `${API_ENDPOINT}/api/v1/auth/login`,
           this.fields,
+          {
+            withCredentials: true,
+          },
         );
         if (resp.status === 200) {
           this.error = false;

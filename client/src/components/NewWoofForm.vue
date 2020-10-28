@@ -45,7 +45,9 @@ export default defineComponent({
         userId: this.$store.state.user.id,
       };
       try {
-        const res = await axios.post(`${API_ENDPOINT}/api/v1/woofs`, payload);
+        const res = await axios.post(`${API_ENDPOINT}/api/v1/woofs`, payload, {
+          withCredentials: true,
+        });
         console.log(res.data);
         const { user, woof, id } = res.data.woof;
         const newWoof = {
