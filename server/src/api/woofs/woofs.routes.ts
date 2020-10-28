@@ -2,6 +2,7 @@ import { Router, Response, NextFunction } from "express";
 import { simpleErrorMessage } from "../../lib/error";
 import Woofs from "./woofs.model";
 import Users from "../users/users.model";
+import { checkAuth } from "../../middlewares/middlewares";
 import * as yup from "yup";
 
 const router = Router();
@@ -77,7 +78,7 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
-router.post("/", async (req, res, next) => {
+router.post("/", checkAuth, async (req, res, next) => {
   const { userId, woof } = req.body;
   try {
     await schema.validate(
@@ -89,13 +90,22 @@ router.post("/", async (req, res, next) => {
         abortEarly: false,
       }
     );
-    const newWoof = await Woofs.query().insert({
+    const newWoof = await Woofs.query().insertAndFetch({
       users_id: userId,
       woof,
     });
+    const user = await Users.query().where({ id: newWoof.users_id }).first();
     res.status(201).json({
       message: messages.post,
-      newWoof,
+      woof: {
+        id: newWoof.id,
+        woof: newWoof.woof,
+        created_at: newWoof.created_at,
+        user: {
+          username: user.username,
+          handle: user.handle,
+        },
+      },
     });
   } catch (error) {
     if (error.name === "ValidationError") {

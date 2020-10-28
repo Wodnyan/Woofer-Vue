@@ -50,10 +50,13 @@ router.post("/signup", async (req, res, next) => {
       email: user.email,
     };
     const token = await jwt.sign(payload);
+    res.cookie("token", token, {
+      maxAge: 5 * 60 * 60 * 100,
+      httpOnly: true,
+    });
     res.status(201).json({
       user: payload,
       message: messages.signUp,
-      token,
     });
   } catch (error) {
     if (error.constraint === "users_email_unique") {
@@ -93,10 +96,13 @@ router.post("/login", async (req, res, next) => {
           handle: user.handle,
         };
         const token = await jwt.sign(payload);
+        res.cookie("token", token, {
+          maxAge: 5 * 60 * 60 * 100,
+          httpOnly: true,
+        });
         res.json({
           message: messages.login,
           user: payload,
-          token,
         });
       } else {
         return simpleErrorMessage(

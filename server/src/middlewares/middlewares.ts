@@ -1,4 +1,6 @@
 import { NextFunction, Response, Request } from "express";
+import { verify } from "../lib/jwt";
+import { simpleErrorMessage } from "../lib/error";
 
 export function notFoundHandler(
   req: Request,
@@ -24,4 +26,19 @@ export function errorHandler(
     stack: process.env.NODE_ENV === "production" ? undefined : error.stack,
     errors: error.errors || undefined,
   });
+}
+
+export async function checkAuth(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const { token } = req.cookies;
+  try {
+    const isTokenValid = await verify(token);
+    console.log("TOKEN", isTokenValid);
+    next();
+  } catch (error) {
+    simpleErrorMessage(res, next, "Forbidden", 403);
+  }
 }

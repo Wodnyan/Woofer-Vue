@@ -5,6 +5,7 @@ class Woofs extends Model {
   id!: number;
   users_id!: number;
   woof!: string;
+  created_at!: Date;
 
   static get tableName() {
     return "woofs";
