@@ -6,13 +6,14 @@
       class="new-woof-container"
       @click="handleOverlayClick"
     >
-      <new-woof-form :close="toggleNewWoofForm" />
+      <new-woof-form class="w-50 mx-auto mt-4" />
     </div>
     <div class="row">
       <div class="col-3">
         hello World
       </div>
       <div class="col-6">
+        <new-woof-form />
         <card
           v-for="woof in $store.state.woofs"
           :key="woof.id"
@@ -68,7 +69,7 @@ const hideScrollBarIfFormIsOpen = () => {
 export default {
   data() {
     return {
-      showNewWoofForm: true,
+      showNewWoofForm: false,
     };
   },
   components: {
@@ -84,10 +85,17 @@ export default {
     },
   },
   async mounted() {
+    const auth = await axios.get(`${API_ENDPOINT}/api/v1/users/check`, {
+      withCredentials: true,
+    });
+    this.$store.state.user = auth.data.user;
     const resp = await axios.get(`${API_ENDPOINT}/api/v1/woofs`);
     this.$store.state.woofs = resp.data.woofs;
   },
   updated() {
+    if (this.$store.state.user === null) {
+      this.$router.push("/");
+    }
     hideScrollBarIfFormIsOpen();
   },
 };

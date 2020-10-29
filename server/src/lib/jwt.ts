@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import { User } from "../types";
 
 export const sign = (payload: Object) => {
   return new Promise((resolve, reject) => {
@@ -18,8 +19,8 @@ export const sign = (payload: Object) => {
 };
 
 export const verify = (token: string) => {
-  return new Promise((resolve, reject) => {
-    jwt.verify(token, process.env.JWT_SECRET!, (err, decoded) => {
+  return new Promise((resolve: (user: User) => void, reject) => {
+    jwt.verify(token, process.env.JWT_SECRET!, (err, decoded: any) => {
       if (err) return reject(err);
       return resolve(decoded);
     });
