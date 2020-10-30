@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid">
+  <div class="woof-container container-fluid">
     <div
       v-if="showNewWoofForm"
       :data-open="showNewWoofForm"
@@ -9,11 +9,19 @@
       <new-woof-form class="w-50 mx-auto mt-4" />
     </div>
     <div class="row">
-      <div class="col-3">
-        hello World
+      <div class="col-3 p-4">
+        <Nav />
+        <button
+          class="btn btn-primary btn-block mb-1"
+          @click="toggleNewWoofForm"
+        >
+          Woof
+        </button>
       </div>
-      <div class="col-6">
-        <new-woof-form />
+      <main class="col-6 feed">
+        <div class="mb-4 mt-1">
+          <new-woof-form />
+        </div>
         <card
           v-for="woof in $store.state.woofs"
           :key="woof.id"
@@ -22,7 +30,7 @@
           :username="woof.username"
           :createdAt="woof.created_at"
         />
-      </div>
+      </main>
       <div class="col-3">
         <button @click="toggleNewWoofForm" class="btn btn-primary btn-circle">
           <svg
@@ -52,6 +60,7 @@
 <script>
 import Card from "@/components/Card";
 import NewWoofForm from "@/components/NewWoofForm";
+import Nav from "@/components/Nav";
 import { API_ENDPOINT } from "@/constants/endpoint";
 import axios from "axios";
 
@@ -75,6 +84,7 @@ export default {
   components: {
     Card,
     NewWoofForm,
+    Nav,
   },
   methods: {
     toggleNewWoofForm() {
@@ -102,6 +112,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import "../styles/_colors";
 .new-woof-container {
   position: absolute;
   top: 0;
@@ -109,7 +120,16 @@ export default {
   width: 100%;
   height: 100%;
   align-items: center;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.7);
   z-index: 100;
+}
+.woof-container {
+  overflow-y: hidden;
+  background: $dark-blue;
+  height: 100vh;
+}
+.feed {
+  overflow-y: auto;
+  height: 100vh;
 }
 </style>

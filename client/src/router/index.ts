@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import Home from "../views/Home.vue";
+import LandingPage from "../views/LandingPage.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
-    name: "Home",
-    component: Home,
+    name: "Landing Page",
+    component: LandingPage,
   },
   {
     path: "/auth/signup",
@@ -15,14 +15,11 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/auth/login",
     name: "Login",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: () => import("@/views/Login.vue"),
   },
   {
-    path: "/woofs",
-    name: "Woofs",
+    path: "/home",
+    name: "Home",
     component: () => import("@/views/Woofs.vue"),
   },
 ];
