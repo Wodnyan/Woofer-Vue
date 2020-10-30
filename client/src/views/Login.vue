@@ -75,7 +75,7 @@ export default defineComponent({
           this.isLoading = false;
           this.$store.state.user = resp.data.user;
           this.$store.state.jwt = resp.data.token;
-          this.$router.push("/woofs");
+          this.$router.push("/home");
         }
       } catch (error) {
         this.error = true;
