@@ -34,9 +34,11 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+@import "../styles/_colors";
 article {
-  margin-bottom: 1rem;
-  border: 1px solid grey;
+  /* margin-bottom: 1rem; */
+  border: 1px solid $kinda-transparent-blue;
   padding: 1rem;
+  color: #fff;
 }
 </style>

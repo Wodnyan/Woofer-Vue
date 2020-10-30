@@ -9,52 +9,19 @@
       <new-woof-form class="w-50 mx-auto mt-4" />
     </div>
     <div class="row">
-      <nav class="col-3 nav">
-        <button class="nav__button mb-2">
-          <span class="nav__button-icon"
-            ><svg
-              viewBox="0 0 24 24"
-              width="24"
-              height="24"
-              stroke="blue"
-              stroke-width="2"
-              fill="none"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="css-i6dzq1"
-            >
-              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-              <polyline points="9 22 9 12 15 12 15 22"></polyline></svg
-          ></span>
-          <span class="nav__button-text">Home</span>
-        </button>
-        <button class="nav__button mb-2">
-          <span class="nav__button-icon"
-            ><svg
-              viewBox="0 0 24 24"
-              width="24"
-              height="24"
-              stroke="blue"
-              stroke-width="2"
-              fill="none"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="css-i6dzq1"
-            >
-              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-              <polyline points="9 22 9 12 15 12 15 22"></polyline></svg
-          ></span>
-          <span>Profile</span>
-        </button>
+      <div class="col-3 p-4">
+        <Nav />
         <button
           class="btn btn-primary btn-block mb-1"
           @click="toggleNewWoofForm"
         >
           Woof
         </button>
-      </nav>
+      </div>
       <main class="col-6 feed">
-        <new-woof-form />
+        <div class="mb-4 mt-1">
+          <new-woof-form />
+        </div>
         <card
           v-for="woof in $store.state.woofs"
           :key="woof.id"
@@ -93,6 +60,7 @@
 <script>
 import Card from "@/components/Card";
 import NewWoofForm from "@/components/NewWoofForm";
+import Nav from "@/components/Nav";
 import { API_ENDPOINT } from "@/constants/endpoint";
 import axios from "axios";
 
@@ -116,6 +84,7 @@ export default {
   components: {
     Card,
     NewWoofForm,
+    Nav,
   },
   methods: {
     toggleNewWoofForm() {
@@ -143,6 +112,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import "../styles/_colors";
 .new-woof-container {
   position: absolute;
   top: 0;
@@ -150,35 +120,16 @@ export default {
   width: 100%;
   height: 100%;
   align-items: center;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.7);
   z-index: 100;
 }
 .woof-container {
   overflow-y: hidden;
+  background: $dark-blue;
   height: 100vh;
-  nav.nav {
-    display: block;
-    button {
-      display: block;
-    }
-    .nav__button {
-      display: flex;
-      /* justify-content: space-between; */
-      align-items: center;
-      background: red;
-      padding: 0.5rem 2rem 0.5rem 0.5rem;
-      border: none;
-      border-radius: 2rem;
-      font-weight: bold;
-      span.icon {
-        margin-right: 10px;
-        background: black;
-      }
-    }
-  }
-  .feed {
-    overflow-y: auto;
-    height: 100vh;
-  }
+}
+.feed {
+  overflow-y: auto;
+  height: 100vh;
 }
 </style>
