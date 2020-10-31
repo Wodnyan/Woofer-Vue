@@ -3,6 +3,7 @@
 </template>
 
 <style lang="scss">
+@import "./sass/_colors";
 *,
 *::after,
 *::before {
@@ -14,6 +15,8 @@
 html,
 body {
   height: 100%;
+  background: $dark-blue;
+  color: #fff;
 }
 
 .btn.btn-circle,

@@ -53,7 +53,7 @@ export default {};
 </script>
 
 <style scoped lang="scss">
-@import "../styles/_colors";
+@import "../sass/_colors";
 nav {
   display: block;
   .nav__button {
@@ -70,6 +70,11 @@ nav {
         stroke: $light-blue;
       }
     }
+  }
+}
+@media only screen and (max-width: 768px) {
+  nav {
+    display: none;
   }
 }
 </style>

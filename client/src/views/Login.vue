@@ -87,5 +87,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "@/styles/_forms";
+@import "@/sass/_forms";
 </style>
