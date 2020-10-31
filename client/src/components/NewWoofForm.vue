@@ -18,11 +18,11 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from "vue";
 import axios from "axios";
 import { API_ENDPOINT } from "@/constants/endpoint";
-import Counter from "@/components/Counter";
+import Counter from "@/components/Counter.vue";
 
 export default defineComponent({
   data() {

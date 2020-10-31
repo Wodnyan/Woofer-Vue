@@ -13,7 +13,7 @@
   </article>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from "vue";
 import { format } from "timeago.js";
 
@@ -34,7 +34,7 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-@import "../styles/_colors";
+@import "../sass/_colors";
 article {
   /* margin-bottom: 1rem; */
   border: 1px solid $kinda-transparent-blue;

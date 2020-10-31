@@ -60,7 +60,10 @@ router.post("/signup", async (req, res, next) => {
     });
   } catch (error) {
     if (error.constraint === "users_email_unique") {
-      return simpleErrorMessage(res, next, "Email in use.", 409);
+      const error: any = new Error("Email in use.");
+      error.errors = ["email in use"];
+      res.status(409);
+      next(error);
     } else if (error.name === "ValidationError") {
       res.status(400);
       return next(error);

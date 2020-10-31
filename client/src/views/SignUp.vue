@@ -45,6 +45,7 @@
                 type="password"
                 v-model="fields.password"
               />
+              <Foo />
               <div v-if="check('password')">
                 {{ getErrorForField("password") }}
               </div>
@@ -79,6 +80,7 @@ export default defineComponent({
       isLoading: false,
     };
   },
+  components: {},
   methods: {
     async signUp() {
       try {
@@ -118,5 +120,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "@/styles/_forms";
+@import "@/sass/_forms";
 </style>
