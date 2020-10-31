@@ -3,7 +3,7 @@
     <div class="media-body">
       <h1 class="h2 mb-0 mr-2 d-inline">{{ username }}</h1>
       <a href="#">{{ handle }}</a>
-      <p class="mb-1">
+      <p class="mb-1 text-break">
         {{ text }}
       </p>
       <time :datetime="createdAt" class="text-muted ">
