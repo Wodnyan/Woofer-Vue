@@ -6,7 +6,7 @@
       class="new-woof-container"
       @click="handleOverlayClick"
     >
-      <new-woof-form class="w-50 mx-auto mt-4" />
+      <new-woof-form />
     </div>
     <div class="row">
       <div class="col-3 p-4 d-none d-md-block">
@@ -104,9 +104,13 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  align-items: center;
   background: rgba(0, 0, 0, 0.7);
-  z-index: 100;
+  z-index: 100000;
+  .woof-form-container {
+    position: relative;
+    width: 50%;
+    margin: 1rem auto 0;
+  }
 }
 .woof-container {
   overflow-y: hidden;
@@ -116,6 +120,7 @@ export default {
 .feed {
   position: relative;
   overflow-y: auto;
+  z-index: 1;
   height: 100vh;
   .toggle-button {
     display: none;
