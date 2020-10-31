@@ -19,9 +19,9 @@
                 type="text"
                 v-model="fields.username"
               />
-              <div v-if="check('username')">
+              <error-message v-if="check('username')">
                 {{ getErrorForField("username") }}
-              </div>
+              </error-message>
             </div>
             <div class="form-group">
               <label for="email">E-Mail</label>
@@ -32,9 +32,9 @@
                 type="email"
                 v-model="fields.email"
               />
-              <div v-if="check('email')">
+              <error-message v-if="check('email')">
                 {{ getErrorForField("email") }}
-              </div>
+              </error-message>
             </div>
             <div class="form-group">
               <label for="password">Password</label>
@@ -45,10 +45,9 @@
                 type="password"
                 v-model="fields.password"
               />
-              <Foo />
-              <div v-if="check('password')">
+              <error-message v-if="check('password')">
                 {{ getErrorForField("password") }}
-              </div>
+              </error-message>
             </div>
           </div>
         </transition>
@@ -64,6 +63,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { API_ENDPOINT } from "@/constants/endpoint";
+import ErrorMessage from "@/components/ErrorMessage.vue";
 import axios from "axios";
 
 type Field = "username" | "password" | "email";
@@ -80,7 +80,9 @@ export default defineComponent({
       isLoading: false,
     };
   },
-  components: {},
+  components: {
+    ErrorMessage,
+  },
   methods: {
     async signUp() {
       try {
@@ -99,7 +101,6 @@ export default defineComponent({
         if (error.response.data.errors) {
           this.errors = error.response.data.errors;
         }
-        console.log(error.response.data);
         this.isLoading = false;
       }
     },
@@ -109,7 +110,6 @@ export default defineComponent({
     getErrorForField(field: Field): string {
       for (let i = 0; i < this.errors.length; i++) {
         if (this.errors[i].includes(field)) {
-          console.log(this.errors[i]);
           return this.errors[i];
         }
       }

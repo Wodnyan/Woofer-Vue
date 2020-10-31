@@ -30,9 +30,9 @@
             </div>
           </div>
         </transition>
-        <p v-if="error" class="text-danger text-center">
+        <error-message v-if="error" class="text-center">
           E-mail or Password is incorrect!
-        </p>
+        </error-message>
         <div class="bottom">
           <router-link to="/auth/signup">Create an Account!</router-link>
           <button class="btn btn-primary">Login</button>
@@ -45,6 +45,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { API_ENDPOINT } from "@/constants/endpoint";
+import ErrorMessage from "@/components/ErrorMessage.vue";
 import axios from "axios";
 
 export default defineComponent({
@@ -58,6 +59,9 @@ export default defineComponent({
       error: false,
       isLoading: false,
     };
+  },
+  components: {
+    ErrorMessage,
   },
   methods: {
     async signUp() {
