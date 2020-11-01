@@ -40,7 +40,7 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import Card from "@/components/Card.vue";
 import NewWoofForm from "@/components/NewWoofForm.vue";
 import Nav from "@/components/Nav.vue";

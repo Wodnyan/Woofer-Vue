@@ -26,8 +26,8 @@ export default defineComponent({
     createdAt: String,
   },
   computed: {
-    timeStampToHumanReadable: function() {
-      return format(this.createdAt);
+    timeStampToHumanReadable: function(): string {
+      return format(this.createdAt as string);
     },
   },
 });
