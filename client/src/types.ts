@@ -5,7 +5,8 @@ export interface User {
 }
 export interface Woof {
   id: number;
-  users_id: number;
+  username: string;
+  handle: string;
   woof: string;
-  created_at: Date;
+  createdAt: Date;
 }

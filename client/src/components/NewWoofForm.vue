@@ -23,6 +23,7 @@ import { defineComponent } from "vue";
 import axios from "axios";
 import { API_ENDPOINT } from "@/constants/endpoint";
 import Counter from "@/components/Counter.vue";
+import { Woof } from "@/types";
 
 export default defineComponent({
   data() {
@@ -42,7 +43,7 @@ export default defineComponent({
       if (this.woof.length > this.maxLength) return;
       const payload = {
         woof: this.woof,
-        userId: this.$store.state.user.id,
+        userId: this.$store.state.user?.id,
       };
       try {
         const res = await axios.post(`${API_ENDPOINT}/api/v1/woofs`, payload, {
@@ -50,7 +51,7 @@ export default defineComponent({
         });
         console.log(res.data);
         const { user, woof, id } = res.data.woof;
-        const newWoof = {
+        const newWoof: Woof = {
           id,
           woof,
           createdAt: res.data.woof.created_at,
