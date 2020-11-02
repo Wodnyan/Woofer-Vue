@@ -6,6 +6,7 @@ class Woofs extends Model {
   users_id!: number;
   woof!: string;
   created_at!: Date;
+  likes!: number;
 
   static get tableName() {
     return "woofs";

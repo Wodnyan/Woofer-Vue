@@ -3,6 +3,7 @@ import { simpleErrorMessage } from "../../lib/error";
 import Woofs from "./woofs.model";
 import Users from "../users/users.model";
 import { checkAuth } from "../../middlewares/middlewares";
+import { raw } from "objection";
 import * as yup from "yup";
 
 const router = Router();
@@ -11,6 +12,8 @@ export const messages = {
   getOne: (id: number) => `Woof with the id of ${id}`,
   post: "Created a new woof",
   delete: "Woof deleted",
+  liked: "Liked",
+  disliked: "Disliked",
 };
 
 const schema = yup.object().shape({
@@ -33,7 +36,8 @@ router.get("/", async (req, res, next) => {
         "users.username",
         "users.handle",
         "woofs.woof",
-        "woofs.created_at"
+        "woofs.created_at",
+        "woofs.likes"
       )
       .orderBy("woofs.id", "desc");
     res.json({
@@ -45,6 +49,40 @@ router.get("/", async (req, res, next) => {
       return badRequest(res, next);
     }
     return next(error);
+  }
+});
+
+router.put("/like/:id", checkAuth, async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const woof = await Woofs.query()
+      .patch({ likes: raw("likes + 1") })
+      .where({ id });
+    res.json({
+      message: messages.liked,
+    });
+  } catch (error) {
+    if (error.nativeError.code === "22P02") {
+      return badRequest(res, next);
+    }
+    next(error);
+  }
+});
+
+router.put("/dislike/:id", checkAuth, async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const woof = await Woofs.query()
+      .patch({ likes: raw("likes - 1") })
+      .where({ id });
+    res.json({
+      message: messages.disliked,
+    });
+  } catch (error) {
+    if (error.nativeError.code === "22P02") {
+      return badRequest(res, next);
+    }
+    next(error);
   }
 });
 
@@ -60,7 +98,8 @@ router.get("/:id", async (req, res, next) => {
         "users.username",
         "users.handle",
         "woofs.woof",
-        "woofs.created_at"
+        "woofs.created_at",
+        "woofs.likes"
       )
       .first();
     if (!woof) {
@@ -118,7 +157,7 @@ router.post("/", checkAuth, async (req, res, next) => {
   }
 });
 
-router.delete("/:id", async (req, res, next) => {
+router.delete("/:id", checkAuth, async (req, res, next) => {
   const { id } = req.params;
   try {
     await Woofs.query().where({ id }).delete();
