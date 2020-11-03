@@ -17,7 +17,7 @@ class Woofs extends Model {
         relation: Model.BelongsToOneRelation,
         modelClass: Users,
         join: {
-          from: "animals.user_id",
+          from: "woofs.user_id",
           to: "users.id",
         },
       },

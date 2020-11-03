@@ -52,40 +52,6 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.put("/like/:id", checkAuth, async (req, res, next) => {
-  const { id } = req.params;
-  try {
-    const woof = await Woofs.query()
-      .patch({ likes: raw("likes + 1") })
-      .where({ id });
-    res.json({
-      message: messages.liked,
-    });
-  } catch (error) {
-    if (error.nativeError.code === "22P02") {
-      return badRequest(res, next);
-    }
-    next(error);
-  }
-});
-
-router.put("/dislike/:id", checkAuth, async (req, res, next) => {
-  const { id } = req.params;
-  try {
-    const woof = await Woofs.query()
-      .patch({ likes: raw("likes - 1") })
-      .where({ id });
-    res.json({
-      message: messages.disliked,
-    });
-  } catch (error) {
-    if (error.nativeError.code === "22P02") {
-      return badRequest(res, next);
-    }
-    next(error);
-  }
-});
-
 router.get("/:id", async (req, res, next) => {
   const { id } = req.params;
   try {

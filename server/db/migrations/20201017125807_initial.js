@@ -13,6 +13,11 @@ const references = (table, tableName) => {
     .notNullable();
 };
 
+exports.modules = {
+  references,
+  addDefaultColumns,
+};
+
 exports.up = async (knex) => {
   await knex.schema.createTable("users", (table) => {
     table.increments().notNullable();
