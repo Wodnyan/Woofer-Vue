@@ -97,7 +97,7 @@ export default defineComponent({
           this.$router.push("/");
         }
       } catch (error) {
-        console.log(error.response.data.errors);
+        console.log(error.response.data);
         if (error.response.data.errors) {
           this.errors = error.response.data.errors;
         }
@@ -120,5 +120,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "@/sass/_forms";
+@import "@/sass/components/_forms";
 </style>

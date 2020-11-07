@@ -3,6 +3,7 @@ import { simpleErrorMessage } from "../../lib/error";
 import Woofs from "./woofs.model";
 import Users from "../users/users.model";
 import { checkAuth } from "../../middlewares/middlewares";
+import { raw } from "objection";
 import * as yup from "yup";
 
 const router = Router();
@@ -11,6 +12,8 @@ export const messages = {
   getOne: (id: number) => `Woof with the id of ${id}`,
   post: "Created a new woof",
   delete: "Woof deleted",
+  liked: "Liked",
+  disliked: "Disliked",
 };
 
 const schema = yup.object().shape({
@@ -22,12 +25,25 @@ const badRequest = (res: Response, next: NextFunction) =>
   simpleErrorMessage(res, next, "Bad Request", 400);
 
 router.get("/", async (req, res, next) => {
-  const { userId } = req.query;
+  const { handle } = req.query;
   try {
-    const woofs = await Users.query()
-      .join("woofs", "users.id", "=", "woofs.users_id")
-      .where({ users_id: userId })
+    // const woofs = await Users.query()
+    //   .leftJoinRelated("[woofs, likes]")
+    //   .where({ users_id: userId })
+    //   .skipUndefined()
+    //   .select(
+    //     "woofs.id",
+    //     "users.username",
+    //     "users.handle",
+    //     "woofs.woof",
+    //     "woofs.created_at",
+    //     "likes.is_liked"
+    //   )
+    //   .orderBy("woofs.id", "desc");
+    const woofs = await Woofs.query()
+      .where({ handle })
       .skipUndefined()
+      .joinRelated("users")
       .select(
         "woofs.id",
         "users.username",
@@ -41,12 +57,36 @@ router.get("/", async (req, res, next) => {
       woofs,
     });
   } catch (error) {
-    if (error.nativeError.code === "22P02") {
-      return badRequest(res, next);
-    }
     return next(error);
   }
 });
+
+// router.get("/", async (req, res, next) => {
+//   const { userId } = req.query;
+//   try {
+//     const woofs = await Users.query()
+//       .join("woofs", "users.id", "=", "woofs.users_id")
+//       .where({ users_id: userId })
+//       .skipUndefined()
+//       .select(
+//         "woofs.id",
+//         "users.username",
+//         "users.handle",
+//         "woofs.woof",
+//         "woofs.created_at"
+//       )
+//       .orderBy("woofs.id", "desc");
+//     res.json({
+//       message: messages.getAll,
+//       woofs,
+//     });
+//   } catch (error) {
+//     if (error.nativeError.code === "22P02") {
+//       return badRequest(res, next);
+//     }
+//     return next(error);
+//   }
+// });
 
 router.get("/:id", async (req, res, next) => {
   const { id } = req.params;
@@ -118,7 +158,7 @@ router.post("/", checkAuth, async (req, res, next) => {
   }
 });
 
-router.delete("/:id", async (req, res, next) => {
+router.delete("/:id", checkAuth, async (req, res, next) => {
   const { id } = req.params;
   try {
     await Woofs.query().where({ id }).delete();

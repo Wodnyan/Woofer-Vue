@@ -22,7 +22,10 @@
         </router-link>
       </div>
       <div class="route">
-        <router-link to="/user" class="nav__button mb-2 d-inline-block">
+        <router-link
+          :to="`/user/${$store.state.user?.handle}`"
+          class="nav__button mb-2 d-inline-block"
+        >
           <span class="nav__button-icon mx-2 d-inline-block "
             ><svg
               viewBox="0 0 24 24"

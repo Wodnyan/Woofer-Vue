@@ -19,56 +19,41 @@
         </button>
       </div>
       <main class="col-md-6 feed">
-        <div class="mb-4 mt-1">
-          <new-woof-form />
-        </div>
         <card
-          v-for="woof in $store.state.woofs"
+          v-for="woof in woofs"
           :key="woof.id"
           :text="woof.woof"
           :handle="`@${woof.handle}`"
           :username="woof.username"
           :createdAt="woof.created_at"
         />
-        <mobile-toggle-woof-button
-          :toggle="toggleNewWoofForm"
-          class="toggle-button"
-        />
+        <h1 v-if="!!!woofs.length" class="text-center">
+          This female dog in heat is empty
+        </h1>
       </main>
     </div>
   </div>
 </template>
 
 <script>
+import { defineComponent } from "vue";
 import Card from "@/components/Card.vue";
-import NewWoofForm from "@/components/NewWoofForm.vue";
 import Nav from "@/components/Nav.vue";
-import MobileToggleWoofButton from "@/components/MobileToggleWoofButton.vue";
+import NewWoofForm from "@/components/NewWoofForm.vue";
 import { API_ENDPOINT } from "@/constants/endpoint";
 import axios from "axios";
 
-const hideScrollBarIfFormIsOpen = () => {
-  const isOpen = document.querySelector(".new-woof-container")
-    ? document.querySelector(".new-woof-container")?.getAttribute("data-open")
-    : false;
-  if (isOpen) {
-    document.body.style.overflow = "hidden";
-  } else {
-    document.body.style.overflow = "auto";
-  }
-};
-
-export default {
-  data() {
-    return {
-      showNewWoofForm: false,
-    };
-  },
+export default defineComponent({
   components: {
     Card,
-    NewWoofForm,
     Nav,
-    MobileToggleWoofButton,
+    NewWoofForm,
+  },
+  data() {
+    return {
+      woofs: [],
+      showNewWoofForm: false,
+    };
   },
   methods: {
     toggleNewWoofForm() {
@@ -79,21 +64,16 @@ export default {
     },
   },
   async mounted() {
-    const auth = await axios.get(`${API_ENDPOINT}/api/v1/users/check`, {
-      withCredentials: true,
-    });
-    console.log(auth);
-    this.$store.state.user = auth.data.user;
-    const resp = await axios.get(`${API_ENDPOINT}/api/v1/woofs`);
-    this.$store.state.woofs = resp.data.woofs;
+    const handle = this.$route.params.handle;
+    const resp = await axios.get(
+      `${API_ENDPOINT}/api/v1/woofs?handle=${handle}`,
+      {
+        withCredentials: true,
+      },
+    );
+    this.woofs = resp.data.woofs;
   },
-  updated() {
-    if (!this.$store.state.user) {
-      this.$router.push("/");
-    }
-    hideScrollBarIfFormIsOpen();
-  },
-};
+});
 </script>
 
 <style scoped lang="scss">

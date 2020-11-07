@@ -1,20 +1,22 @@
 <template>
   <article class="media">
     <div class="media-body">
-      <h1 class="h2 mb-0 mr-2 d-inline">{{ username }}</h1>
-      <a href="#">{{ handle }}</a>
+      <h1 class="h3 mb-0 d-inline">{{ username }}</h1>
+      <a class="mx-1" href="#">{{ handle }}</a>
+      <time :datetime="createdAt" class="text-muted">
+        {{ timeStampToHumanReadable }}
+      </time>
       <p class="mb-1 text-break">
         {{ text }}
       </p>
-      <time :datetime="createdAt" class="text-muted ">
-        {{ timeStampToHumanReadable }}
-      </time>
+      <like :liked="false" :numberOfLikes="1" />
     </div>
   </article>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import Like from "@/components/Like.vue";
 import { format } from "timeago.js";
 
 export default defineComponent({
@@ -24,6 +26,9 @@ export default defineComponent({
     handle: String,
     text: String,
     createdAt: String,
+  },
+  components: {
+    Like,
   },
   computed: {
     timeStampToHumanReadable: function(): string {

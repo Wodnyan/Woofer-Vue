@@ -22,6 +22,11 @@ const routes: Array<RouteRecordRaw> = [
     name: "Home",
     component: () => import("@/views/Woofs.vue"),
   },
+  {
+    path: "/user/:handle",
+    name: "User",
+    component: () => import("@/views/User.vue"),
+  },
 ];
 
 const router = createRouter({
