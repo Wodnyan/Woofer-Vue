@@ -91,5 +91,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "@/sass/_forms";
+@import "@/sass/components/_forms";
 </style>

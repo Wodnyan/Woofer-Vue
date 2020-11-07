@@ -35,7 +35,6 @@
           class="toggle-button"
         />
       </main>
-      <div class="col-3 d-none d-md-block"></div>
     </div>
   </div>
 </template>
@@ -83,12 +82,13 @@ export default {
     const auth = await axios.get(`${API_ENDPOINT}/api/v1/users/check`, {
       withCredentials: true,
     });
+    console.log(auth);
     this.$store.state.user = auth.data.user;
     const resp = await axios.get(`${API_ENDPOINT}/api/v1/woofs`);
     this.$store.state.woofs = resp.data.woofs;
   },
   updated() {
-    if (this.$store.state.user === null) {
+    if (!this.$store.state.user) {
       this.$router.push("/");
     }
     hideScrollBarIfFormIsOpen();
@@ -97,46 +97,5 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "../sass/_colors";
-.new-woof-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  z-index: 100000;
-  .woof-form-container {
-    position: relative;
-    width: 50%;
-    margin: 1rem auto 0;
-  }
-}
-.woof-container {
-  overflow-y: hidden;
-  background: $dark-blue;
-  height: 100vh;
-}
-.feed {
-  position: relative;
-  overflow-y: auto;
-  z-index: 1;
-  height: 100vh;
-  .toggle-button {
-    display: none;
-    position: fixed;
-    bottom: 1rem;
-    right: 1rem;
-  }
-}
-@media only screen and (max-width: 768px) {
-  .feed {
-    .toggle-button {
-      display: block;
-      position: fixed;
-      bottom: 1rem;
-      right: 1rem;
-    }
-  }
-}
+@import "../sass/components/_woofs";
 </style>

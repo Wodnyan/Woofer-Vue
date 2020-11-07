@@ -25,19 +25,31 @@ const badRequest = (res: Response, next: NextFunction) =>
   simpleErrorMessage(res, next, "Bad Request", 400);
 
 router.get("/", async (req, res, next) => {
-  const { userId } = req.query;
+  const { handle } = req.query;
   try {
-    const woofs = await Users.query()
-      .join("woofs", "users.id", "=", "woofs.users_id")
-      .where({ users_id: userId })
+    // const woofs = await Users.query()
+    //   .leftJoinRelated("[woofs, likes]")
+    //   .where({ users_id: userId })
+    //   .skipUndefined()
+    //   .select(
+    //     "woofs.id",
+    //     "users.username",
+    //     "users.handle",
+    //     "woofs.woof",
+    //     "woofs.created_at",
+    //     "likes.is_liked"
+    //   )
+    //   .orderBy("woofs.id", "desc");
+    const woofs = await Woofs.query()
+      .where({ handle })
       .skipUndefined()
+      .joinRelated("users")
       .select(
         "woofs.id",
         "users.username",
         "users.handle",
         "woofs.woof",
-        "woofs.created_at",
-        "woofs.likes"
+        "woofs.created_at"
       )
       .orderBy("woofs.id", "desc");
     res.json({
@@ -45,12 +57,36 @@ router.get("/", async (req, res, next) => {
       woofs,
     });
   } catch (error) {
-    if (error.nativeError.code === "22P02") {
-      return badRequest(res, next);
-    }
     return next(error);
   }
 });
+
+// router.get("/", async (req, res, next) => {
+//   const { userId } = req.query;
+//   try {
+//     const woofs = await Users.query()
+//       .join("woofs", "users.id", "=", "woofs.users_id")
+//       .where({ users_id: userId })
+//       .skipUndefined()
+//       .select(
+//         "woofs.id",
+//         "users.username",
+//         "users.handle",
+//         "woofs.woof",
+//         "woofs.created_at"
+//       )
+//       .orderBy("woofs.id", "desc");
+//     res.json({
+//       message: messages.getAll,
+//       woofs,
+//     });
+//   } catch (error) {
+//     if (error.nativeError.code === "22P02") {
+//       return badRequest(res, next);
+//     }
+//     return next(error);
+//   }
+// });
 
 router.get("/:id", async (req, res, next) => {
   const { id } = req.params;
@@ -64,8 +100,7 @@ router.get("/:id", async (req, res, next) => {
         "users.username",
         "users.handle",
         "woofs.woof",
-        "woofs.created_at",
-        "woofs.likes"
+        "woofs.created_at"
       )
       .first();
     if (!woof) {

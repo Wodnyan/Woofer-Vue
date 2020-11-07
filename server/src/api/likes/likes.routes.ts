@@ -3,6 +3,17 @@ import Likes from "./likes.model";
 
 const router = Router();
 
+router.get("/", async (req, res, next) => {
+  try {
+    const likes = await Likes.query();
+    res.json({
+      likes,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.post("/", async (req, res, next) => {
   const { usersId, woofsId } = req.body;
   try {

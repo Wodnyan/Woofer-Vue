@@ -1,6 +1,7 @@
 import { Model } from "objection";
 import db from "../../db";
 import Woofs from "../woofs/woofs.model";
+import Likes from "../likes/likes.model";
 import jsonSchema from "./users.schema.json";
 
 const connection = async () => {
@@ -27,6 +28,14 @@ class Users extends Model {
       join: {
         from: "users.id",
         to: "woofs.users_id",
+      },
+    },
+    likes: {
+      relation: Model.HasManyRelation,
+      modelClass: Likes,
+      join: {
+        from: "users.id",
+        to: "likes.users_id",
       },
     },
   };

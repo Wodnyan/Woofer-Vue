@@ -23,7 +23,7 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/Woofs.vue"),
   },
   {
-    path: "/user",
+    path: "/user/:handle",
     name: "User",
     component: () => import("@/views/User.vue"),
   },
