@@ -3,7 +3,7 @@ import { simpleErrorMessage } from "../../lib/error";
 import Woofs from "./woofs.model";
 import Users from "../users/users.model";
 import { checkAuth } from "../../middlewares/middlewares";
-import { raw } from "objection";
+import * as jwt from "../../lib/jwt";
 import * as yup from "yup";
 
 const router = Router();
@@ -25,32 +25,21 @@ const badRequest = (res: Response, next: NextFunction) =>
   simpleErrorMessage(res, next, "Bad Request", 400);
 
 router.get("/", async (req, res, next) => {
-  const { handle } = req.query;
   try {
-    // const woofs = await Users.query()
-    //   .leftJoinRelated("[woofs, likes]")
-    //   .where({ users_id: userId })
-    //   .skipUndefined()
-    //   .select(
-    //     "woofs.id",
-    //     "users.username",
-    //     "users.handle",
-    //     "woofs.woof",
-    //     "woofs.created_at",
-    //     "likes.is_liked"
-    //   )
-    //   .orderBy("woofs.id", "desc");
+    const { token } = req.cookies;
+    const user = await jwt.verify(token);
+    const { handle } = req.query;
     const woofs = await Woofs.query()
-      .where({ handle })
-      .skipUndefined()
-      .joinRelated("users")
-      .select(
+      .leftJoinRelated("[user, likes]")
+      .select([
         "woofs.id",
-        "users.username",
-        "users.handle",
+        "user.username",
+        "user.handle",
         "woofs.woof",
-        "woofs.created_at"
-      )
+        "woofs.created_at",
+      ])
+      .count("likes.users_id as likes")
+      .groupBy("likes.woofs_id", "user.username", "woofs.id", "user.handle")
       .orderBy("woofs.id", "desc");
     res.json({
       message: messages.getAll,
@@ -60,33 +49,6 @@ router.get("/", async (req, res, next) => {
     return next(error);
   }
 });
-
-// router.get("/", async (req, res, next) => {
-//   const { userId } = req.query;
-//   try {
-//     const woofs = await Users.query()
-//       .join("woofs", "users.id", "=", "woofs.users_id")
-//       .where({ users_id: userId })
-//       .skipUndefined()
-//       .select(
-//         "woofs.id",
-//         "users.username",
-//         "users.handle",
-//         "woofs.woof",
-//         "woofs.created_at"
-//       )
-//       .orderBy("woofs.id", "desc");
-//     res.json({
-//       message: messages.getAll,
-//       woofs,
-//     });
-//   } catch (error) {
-//     if (error.nativeError.code === "22P02") {
-//       return badRequest(res, next);
-//     }
-//     return next(error);
-//   }
-// });
 
 router.get("/:id", async (req, res, next) => {
   const { id } = req.params;
@@ -119,7 +81,7 @@ router.get("/:id", async (req, res, next) => {
 });
 
 router.post("/", checkAuth, async (req, res, next) => {
-  const { userId, woof } = req.body;
+  const { userId, woof } = req.body as { woof: string; userId: number };
   try {
     await schema.validate(
       {

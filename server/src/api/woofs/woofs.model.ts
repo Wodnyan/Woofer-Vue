@@ -7,13 +7,15 @@ class Woofs extends Model {
   users_id!: number;
   woof!: string;
   created_at!: Date;
+  handle!: string;
+  username!: string;
   likes!: number;
 
   static get tableName() {
     return "woofs";
   }
   static relationMappings = {
-    users: {
+    user: {
       relation: Model.BelongsToOneRelation,
       modelClass: path.join(__dirname + "/../users/users.model"),
       join: {
@@ -21,14 +23,14 @@ class Woofs extends Model {
         to: "woofs.users_id",
       },
     },
-    // likes: {
-    //   relation: Model.,
-    //   modelClass: path.join(__dirname + "/../likes/likes.model"),
-    //   join: {
-    //     from: "likes.woofs_id",
-    //     to: "woofs.id",
-    //   },
-    // },
+    likes: {
+      relation: Model.HasManyRelation,
+      modelClass: path.join(__dirname + "/../likes/likes.model"),
+      join: {
+        from: "likes.woofs_id",
+        to: "woofs.id",
+      },
+    },
   };
 }
 export default Woofs;
